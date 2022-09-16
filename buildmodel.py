@@ -4,9 +4,10 @@ import gym
 import numpy as np
 import tensorflow
 from rl.agents import DQNAgent # other agents are available, like SARSA
-from rl.policy import BoltzmannQPolicy # policuy based learning with this policy (as opposed to value based)
-from rl.memory import SequentialMemory # retain memory
+from rl.policy import BoltzmannQPolicy # policy based learning with this policy (as opposed to value based)
+from rl.memory import SequentialMemory
 
+# build model with tensorflow keras
 def build_model(states, actions):
     model = tensorflow.keras.Sequential() # instantiate the sequential model
     model.add(tensorflow.keras.layers.Flatten(input_shape=(1, states))) # flat node of 4 different states of cart pole
@@ -15,6 +16,7 @@ def build_model(states, actions):
     model.add(tensorflow.keras.layers.Dense(actions, activation='linear')) # last dense node has the two possible actions (left/right, i.e. 0/1)
     return model
 
+# build agent with keras-RL
 def build_agent(model, actions): # model defined above and actions are left and right
     policy = BoltzmannQPolicy() # set up policy
     memory = SequentialMemory(limit=50000, window_length=1) # set up memory
@@ -26,11 +28,11 @@ def build_agent(model, actions): # model defined above and actions are left and 
 if __name__ in "__main__":
     # create a deep learning model with keras
 
-    env = gym.make ('CartPole-v0', render_mode='human') # use make method from openai gym library to build cart pole environment
-    states = env.observation_space.shape[0] # extract the states from the observation space, these are: cart position, cart velocity, pole angle, pole angular velocity
-    actions = env.action_space.n # extract the actions from the action space, these are, push cart right or push cart left
+    env = gym.make ('CartPole-v0', render_mode='human')
+    states = env.observation_space.shape[0]
+    actions = env.action_space.n 
 
-    # build agent with keras-RL
+    # Train agent
     model = build_model(states, actions)
     model.summary()
     dqn = build_agent(model, actions)
